@@ -11,10 +11,12 @@ import firebase from "./firebase";
 
 function Login(props) {
   const [state, setState] = useState({ mobile: "", otp: {} });
+  
   const [show, setShow] = useState({
     mobileVerifed: false,
     optConfirmed: false,
     showOtp: false,
+    error:false,
   });
 
   const onChangeOtp = (otp) => {
@@ -36,12 +38,18 @@ function Login(props) {
       .then((r) => r.json())
       .then((r) => {
         if(r.success){
+          setShow({...show,error:false});
           props.loggedIn(true);
+        }
+        else{
+          console.log("error login");
+          setShow({...show,error:true,showOtp:false});
         }
         
       })
       .catch((er) => {
         console.log(er);
+        setShow({...show,error:true,showOtp:false});
       });
   };
   const onSubmitOtp = (e) => {
@@ -159,6 +167,7 @@ function Login(props) {
             <OTP onChangeOtp={onChangeOtp} onSubmitOtp={onSubmitOtp} />
           </>
         )}
+        {show.error && (<p className="error"> SignUp please!</p>)}
       </Container>
     </div>
   );
